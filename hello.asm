@@ -1,20 +1,18 @@
-
 section .data
-    ; Just write the whole string at once
-    msg db "Hello World!", 0xa  ; 10 = newline[we can use that tooo]
+    msg db "Hello World!", 0xa
     len equ $ - msg
 
 section .text
-    global _start
+    global _hello
 
-_start:
-    mov rdx , len  ;Length of msg
-    mov rsi , msg  ;msg to write
-    mov rdi , 1    ;File descrip [stdout]
-    mov rax , 1    ;sys call num [sys_write]
-    syscall       ;calls the kernel
+_hello:
+    ; sys_write system call
+    mov rax, 1      ; syscall number for sys_write
+    mov rdi, 1      ; file descriptor 1 is stdout
+    mov rsi, msg    ; address of the message to write
+    mov rdx, len    ; length of the message
+    syscall         ; invoke the kernel
 
+    ret             ; return to the C caller
 
-    mov rax , 60    ;syscall num [sys_exit]
-    mov rdi , 0
-    syscall       ;call kernel
+section .note.GNU-stack noalloc noexec nowrite progbits
