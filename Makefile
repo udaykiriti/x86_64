@@ -1,33 +1,40 @@
 TARGET = program
 
-# Object files
-OBJS = main.o hello.o
+# Directories
+SRCDIR  = src
+INCDIR  = include
+OBJDIR  = obj
 
-# Assembler and compiler
-AS = nasm
-CC = gcc
+# Source files
+ASM_SRCS = $(wildcard $(SRCDIR)/*.asm)
 
-# Assembler and compiler flags
-ASFLAGS = -f elf64
-CFLAGS = -g
+# Derived object files
+OBJS = $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.o, $(ASM_SRCS))
 
-# Default 
+# Tools
+AS      = nasm
+LD      = ld
+
+# Flags
+ASFLAGS = -f elf64 -I $(INCDIR)/
+LDFLAGS =
+
+#  Targets 
+
 all: $(TARGET)
 
-# Linking rule
+# Link
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+	$(LD) $(LDFLAGS) -o $@ $^
 
-# Compilation rule for C files
-main.o: main.c
-	$(CC) $(CFLAGS) -c main.c -o main.o
+# Assemble each .asm ->  obj/
+$(OBJDIR)/%.o: $(SRCDIR)/%.asm | $(OBJDIR)
+	$(AS) $(ASFLAGS) -o $@ $<
 
-# Assembling rule for assembly files
-hello.o: hello.asm
-	$(AS) $(ASFLAGS) -o hello.o hello.asm
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -rf $(OBJDIR) $(TARGET)
 
-# Phony targets
 .PHONY: all clean
