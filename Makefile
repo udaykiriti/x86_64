@@ -5,6 +5,5 @@
 run: 
 	./$(filter-out $@,$(MAKECMDGOALS))
 
-# Prevent make from thinking filename is a real target
 %:
 	@:
