@@ -16,4 +16,5 @@ _start:
 
 
     mov eax , 1    ;syscall num [sys_exit]
+    mov rdi , 0
     int 0x80       ;call kernel
