@@ -1,31 +1,37 @@
 TARGET = program
 
-# Directories
+# Dirs
 SRCDIR  = src
 INCDIR  = include
 OBJDIR  = obj
 
-# Source files
+# Src files
+C_SRCS   = $(wildcard $(SRCDIR)/*.c)
 ASM_SRCS = $(wildcard $(SRCDIR)/*.asm)
 
-# Derived object files
-OBJS = $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.o, $(ASM_SRCS))
+# Derived obj files
+C_OBJS   = $(patsubst $(SRCDIR)/%.c,   $(OBJDIR)/%.o, $(C_SRCS))
+ASM_OBJS = $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.o, $(ASM_SRCS))
+OBJS     = $(C_OBJS) $(ASM_OBJS)
 
 # Tools
+CC      = gcc
 AS      = nasm
-LD      = ld
 
 # Flags
+CFLAGS  = -Wall -O2 -I $(INCDIR)/
 ASFLAGS = -f elf64 -I $(INCDIR)/
-LDFLAGS =
 
 #  Targets 
-
 all: $(TARGET)
 
-# Link
+# Link (gcc handles CRT startup for C main)
 $(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^
+
+# Compile each .c -> obj/
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Assemble each .asm ->  obj/
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm | $(OBJDIR)
