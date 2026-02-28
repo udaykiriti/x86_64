@@ -1,3 +1,14 @@
 # Build output
-obj/
-program
+/obj/
+/program
+
+# Toolchain artifacts
+*.o
+*.a
+*.so
+*.dSYM/
+
+# Local editor/OS files
+.DS_Store
+*.swp
+*.swo
