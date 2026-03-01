@@ -1,5 +1,10 @@
 x86_64 Assembly & C Project
-===========================
 
 This is a mixed-language project demonstrating C code calling x86_64 assembly
 routines. It manages low-level I/O and provides fundamental math services.
+
+The main logic is implemented in C, utilizing assembly helpers for specific
+tasks like system calls and direct hardware manipulation where necessary.
+
+Building the project is done via 'make', and the resulting executable can be
+run directly. Cleanup is handled by 'make clean'.
