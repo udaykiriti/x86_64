@@ -1,7 +1,20 @@
 x86_64 Assembly & C Project
+===========================
 
-This is a simple demonstration of C code calling x86_64 assembly routines.
+A mixed-language project demonstrating C code calling x86_64 assembly routines.
+The main logic is implemented in C, utilizing assembly helpers for specific tasks.
 
-It is a mixed language project. The main logic is in C, and it calls
-some assembly helpers.
+Quick Start
+-----------
 
+* Build the project: Run `make`
+* Run the program: Execute `./program`
+* Clean artifacts: Run `make clean`
+
+Project Structure
+-----------------
+
+* Entry point: src/main.c
+* Assembly routines: src/hello.asm
+* Math utilities: src/math_utils.c
+* Build configuration: Makefile
