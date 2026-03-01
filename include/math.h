@@ -1,5 +1,5 @@
-#ifndef MATH_UTILS_H
-#define MATH_UTILS_H
+#ifndef MATH_H
+#define MATH_H
 
 /* Adds two integers */
 int add(int a, int b);
