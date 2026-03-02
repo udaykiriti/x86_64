@@ -2,6 +2,7 @@
 
 global asm_add
 global asm_sub
+global asm_factorial
 
 section .text
 
@@ -19,4 +20,24 @@ asm_add:
 asm_sub:
     mov eax, edi
     sub eax, esi
+    ret
+
+; int asm_factorial(int n)
+; n in edi
+; returns n! in eax
+asm_factorial:
+    cmp edi, 1
+    jle .base_case
+    push rbp
+    mov rbp, rsp
+    push rbx
+    mov rbx, rdi
+    dec rdi
+    call asm_factorial
+    imul eax, ebx
+    pop rbx
+    pop rbp
+    ret
+.base_case:
+    mov eax, 1
     ret

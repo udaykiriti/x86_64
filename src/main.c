@@ -18,9 +18,13 @@ int main(void) {
     printf("C Math: %d + %d = %d\n", a, b, add(a, b));
     printf("C Math: %d * %d = %d\n", a, b, multiply(a, b));
 
+    // Factorial demo
+    printf("C Math: factorial(5) = %d\n", factorial(5));
+
     // Math Assembly
     printf("ASM Math: %d + %d = %d\n", a, b, asm_add(a, b));
     printf("ASM Math: %d - %d = %d\n", a, b, asm_sub(a, b));
+    printf("ASM Math: factorial(5) = %d\n", asm_factorial(5));
 
     // String demo
     char text[] = "GitHub";
