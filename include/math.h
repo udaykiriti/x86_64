@@ -7,7 +7,7 @@ int add(int a, int b);
 /* Multiplies two integers */
 int multiply(int a, int b);
 
-/* Factorial - recursive */
+/* Factorial - iterative */
 int factorial(int n);
 
 #endif

@@ -1,4 +1,4 @@
-; macros.inc — Reusable NASM macros / constants template
+; macros.inc - Reusable NASM macros / constants template
 ; Usage: %include "macros.inc"  at the top of any .asm file
 
 ; System-call numbers (Linux x86_64) 
