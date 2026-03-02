@@ -27,19 +27,31 @@ asm_sub:
 
 ; Factorial (iterative): asm_factorial(int n)
 ; Parameter: edi = n
-; Returns: eax = n!
+; Returns: eax = n! for 0 <= n <= 12
+;          eax = 0 for invalid/overflowing inputs (n < 0 or n > 12)
 asm_factorial:
+    cmp edi, 0
+    jl .invalid
+
     mov eax, 1
     cmp edi, 1          ; if (n <= 1), return 1
     jle .done
 
+    cmp edi, 12         ; 13! exceeds signed 32-bit range
+    jg .invalid
+
+    mov ecx, edi
 .loop:
-    imul eax, edi       ; eax *= n
-    dec edi             ; n--
-    cmp edi, 1
+    imul eax, ecx       ; eax *= n
+    dec ecx             ; n--
+    cmp ecx, 1
     jg .loop
 
 .done:
+    ret
+
+.invalid:
+    xor eax, eax
     ret
 
 section .note.GNU-stack noalloc noexec nowrite progbits
