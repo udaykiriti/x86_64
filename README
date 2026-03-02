@@ -14,7 +14,7 @@ It is only a initail structure..
 
 Building "make" Running "./program" [use this commands].
 
-Cleaning "make clean" [to clean build articrafts].
+Cleaning "make clean" [to clean build artifacts].
 
 "The build system automatically *compiles* all C sources and *assembles* all
 architecture-specific code, *linking* them into a *single* executable."
