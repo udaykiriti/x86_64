@@ -1,4 +1,7 @@
-; fastmath.asm - Optimized math routines in assembly
+; fastmath.asm - x86_64 Assembly math routines
+; All functions follow System V AMD64 ABI calling convention:
+; - First parameter in edi (for 32-bit integers)
+; - Return value in eax
 
 global asm_add
 global asm_sub
@@ -6,38 +9,45 @@ global asm_factorial
 
 section .text
 
-; int asm_add(int a, int b)
-; a in edi, b in esi
-; returns a + b in eax
+; Add two integers: asm_add(int a, int b)
+; Parameters: edi = a, esi = b
+; Returns: eax = a + b
 asm_add:
     mov eax, edi
     add eax, esi
     ret
 
-; int asm_sub(int a, int b)
-; a in edi, b in esi
-; returns a - b in eax
+; Subtract two integers: asm_sub(int a, int b)
+; Parameters: edi = a, esi = b
+; Returns: eax = a - b
 asm_sub:
     mov eax, edi
     sub eax, esi
     ret
 
-; int asm_factorial(int n)
-; n in edi
-; returns n! in eax
+; Factorial (recursive): asm_factorial(int n)
+; Parameter: edi = n
+; Returns: eax = n!
 asm_factorial:
-    cmp edi, 1
-    jle .base_case
+    cmp edi, 1          ; if (n <= 1)
+    jle .return_one     ; return 1
+
+    ; n > 1: recursive case
     push rbp
     mov rbp, rsp
-    push rbx
-    mov rbx, rdi
-    dec rdi
-    call asm_factorial
-    imul eax, ebx
+    push rbx            ; save n for later use
+    
+    mov rbx, rdi        ; rbx = n
+    dec rdi              ; rdi = n - 1
+    call asm_factorial  ; eax = factorial(n-1)
+    imul eax, ebx       ; eax = eax * n
+    
     pop rbx
     pop rbp
     ret
-.base_case:
+
+.return_one:
     mov eax, 1
     ret
+
+section .note.GNU-stack noalloc noexec nowrite progbits

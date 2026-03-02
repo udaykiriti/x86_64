@@ -1,18 +1,24 @@
 #include "string.h"
 
 int str_len(const char *str) {
-    int len = 0;
-    while (str[len] != '\0') {
-        len++;
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
     }
-    return len;
+    return length;
 }
 
 void str_rev(char *str) {
-    int len = str_len(str);
-    for (int i = 0; i < len / 2; i++) {
-        char temp = str[i];
-        str[i] = str[len - 1 - i];
-        str[len - 1 - i] = temp;
+    int length = str_len(str);
+    int start = 0;
+    int end = length - 1;
+
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        
+        start++;
+        end--;
     }
 }
