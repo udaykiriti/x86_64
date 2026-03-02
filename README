@@ -10,7 +10,7 @@ The codebase includes math utilities, string manipulation, and direct syscall
 interfaces. All modules follow x86_64 calling conventions and ABI standards,
 showing how modern systems software integrates compiled and assembled code.
 since it is just only beginning it doesn't contain huge codebase.
-It is only a initail structure..
+It is only a **initail** structure...
 
 Building "make" Running "./program" [use this commands].
 
@@ -23,12 +23,12 @@ architecture-specific code, *linking* them into a *single* executable."
 
 Architecture
 
-The project is organized into distinct modules. Math functions are provided in
+The project is organized into *distinct* modules. Math functions are provided in
 both C and hand-optimized assembly. String utilities operate on kernel buffers.
 All assembly code uses position-independent addressing and proper stack frames.
 
 This serves as a reference implementation for systems-level programming on
 x86_64, demonstrating register usage, calling conventions, and direct kernel
-communication through syscalls [Like all proj maintained].
+communication through syscalls [Like all project maintained].
 
 ================================================
