@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "math.h"
 #include "fastmath.h"
+#include "io.h"
 #include "string.h"
 
 extern void _hello(void);
@@ -27,11 +28,16 @@ int main(void) {
     printf("ASM Math: factorial(5) = %d\n", asm_factorial(5));
 
     // String demo
-    char text[] = "GitHub";
+    char text[] = "time";
     printf("String: '%s' (len: %d)\n", text, str_len(text));
     
     str_rev(text);
     printf("Reversed: '%s'\n", text);
+
+    printf("Type a line for ASM echo: ");
+    fflush(stdout);
+    int echoed = asm_echo();
+    printf("ASM IO: echoed %d byte(s)\n", echoed);
 
     return 0;
 }

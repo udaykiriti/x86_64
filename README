@@ -9,6 +9,8 @@ and performance-critical operations.
 The codebase includes math utilities, string manipulation, and direct syscall
 interfaces. All modules follow x86_64 calling conventions and ABI standards,
 showing how modern systems software integrates compiled and assembled code.
+Current examples cover syscall-based write (`_hello`) and read+echo (`asm_echo`),
+alongside C/ASM arithmetic and string utilities.
 since it is just only beginning it doesn't contain huge codebase.
 It is only a **initail** structure...
 
