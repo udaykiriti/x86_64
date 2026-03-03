@@ -5,11 +5,11 @@ int str_len(const char *str) {
         return 0;
     }
 
-    int length = 0;
-    while (str[length] != '\0') {
-        length++;
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
     }
-    return length;
+    return len;
 }
 
 void str_rev(char *str) {
@@ -26,9 +26,9 @@ void str_rev(char *str) {
     end--;
 
     while (start < end) {
-        char temp_char = *start;
+        char tmp = *start;
         *start = *end;
-        *end = temp_char;
+        *end = tmp;
         start++;
         end--;
     }
