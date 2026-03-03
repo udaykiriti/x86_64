@@ -1,49 +1,59 @@
 /*
  * Main entry point for the application.
- * Calls into assembly routines defined in src/hello.asm.
+ * Demonstrates linked list operations and SIMD operations.
  */
 
 #include <stdio.h>
 #include <stdint.h>
-#include "math.h"
-#include "fastmath.h"
-#include "io.h"
+#include "linked.h"
 #include "simd.h"
-#include "stats.h"
-#include "string.h"
 
 extern void _hello(void);
 
 int main(void) {
     _hello();
 
-    int a = 10 ,  b = 5;
+    Node* list = NULL;
     
-    printf("C Math: %d + %d = %d\n", a, b, add(a, b));
-    printf("C Math: %d - %d = %d\n", a, b, subtract(a, b));
-    printf("C Math: %d * %d = %d\n", a, b, multiply(a, b));
-
-    // Factorial demo
-    printf("C Math: factorial(5) = %d\n", factorial(5));
-
-    // Math Assembly
-    printf("ASM Math: %d + %d = %d\n", a, b, asm_add(a, b));
-    printf("ASM Math: %d - %d = %d\n", a, b, asm_sub(a, b));
-    printf("ASM Math: factorial(5) = %d\n", asm_factorial(5));
-
-    // String demo
-    char txt[] = "time";
-    printf("String: '%s' (len: %d)\n", txt, str_len(txt));
+    printf(" Linked List \n\n");
     
-    str_rev(txt);
-    printf("Reversed: '%s'\n", txt);
+    printf("Append: 10, 20, 30, 40, 50\n");
+    append(&list, 10);
+    append(&list, 20);
+    append(&list, 30);
+    append(&list, 40);
+    append(&list, 50);
+    printf("List: ");
+    show(list);
+    printf("C len(): %d\n", len(list));
+    printf("ASM len(): %d\n\n", asm_len(list));
+    
+    printf("Push: 5\n");
+    push(&list, 5);
+    printf("List: ");
+    show(list);
+    printf("C len(): %d\n", len(list));
+    printf("ASM len(): %d\n\n", asm_len(list));
+    
+    printf("Find 30: %s\n", find(list, 30) ? "Found" : "Not Found");
+    printf("Find 100: %s\n\n", find(list, 100) ? "Found" : "Not Found");
+    
+    printf("Remove 30\n");
+    del(&list, 30);
+    printf("List: ");
+    show(list);
+    printf("C len(): %d\n", len(list));
+    printf("ASM len(): %d\n\n", asm_len(list));
+    
+    printf("Remove 5\n");
+    del(&list, 5);
+    printf("List: ");
+    show(list);
+    printf("C len(): %d\n", len(list));
+    printf("ASM len(): %d\n\n", asm_len(list));
 
-    printf("Type a line for ASM echo: ");
-    fflush(stdout);
-    int nrd = asm_echo();
-
-    printf("ASM IO: echoed %d byte(s)\n", nrd);
-
+    printf("=== SIMD Demo ===\n\n");
+    
     int v1[4] = {1, 2, 3, 4};
     int v2[4] = {10, 20, 30, 40};
     int vo[4] = {0, 0, 0, 0};
@@ -56,24 +66,10 @@ int main(void) {
         asm_vec4_add_i32(v1, v2, vo);
     }
     uint64_t t1 = asm_rdtsc_serialized();
-    printf("SIMD loop cycles (1,000,000 iters): %llu\n",
+    printf("SIMD loop cycles (1,000,000 iters): %llu\n\n",
            (unsigned long long)(t1 - t0));
 
-    int vals[] = {12, -3, 44, 18, 27, 5};
-    int n = (int)(sizeof(vals) / sizeof(vals[0]));
-    IntSummary stats;
-    int lim = 20;
-
-    if (calculate_int_summary(vals, n, &stats)) {
-        printf("C Stats: min=%d max=%d sum=%lld avg=%.2f\n",
-               stats.min,
-               stats.max,
-               stats.sum,
-               stats.avg);
-    }
-
-    int idx = find_first_above_threshold(vals, n, lim);
-    printf("C Stats: first value > %d at index %d\n", lim, idx);
+    purge(&list);
 
     return 0;
 }
