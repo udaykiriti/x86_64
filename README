@@ -1,16 +1,16 @@
 x86_64
 
-===============================================
+================================================
 
 This repo demonstrates systems programming on x86_64 Linux.
-It combines C for logic and I/O with assembly for low-level kernel interaction
-and performance-critical operations.
+It combines C for logic and I/O with assembly for low-level operations
+and performance-critical code.
 
-The codebase includes math utilities, string manipulation, and direct syscall
-interfaces. All modules follow x86_64 calling conventions and ABI standards,
+The codebase includes a linked list data structure with both C and assembly
+implementation. All modules follow x86_64 calling conventions and ABI standards,
 showing how modern systems software integrates compiled and assembled code.
-Current examples cover syscall-based write (`_hello`) and read+echo (`asm_echo`),
-alongside C/ASM arithmetic and string utilities.
+Current examples cover linked list operations (push, append, delete, find, length)
+and SIMD vector operations for high-performance computing.
 since it is just only beginning it doesn't contain huge codebase.
 It is only a **initail** structure...
 
@@ -25,12 +25,14 @@ architecture-specific code, *linking* them into a *single* executable."
 
 Architecture
 
-The project is organized into *distinct* modules. Math functions are provided in
-both C and hand-optimized assembly. String utilities operate on kernel buffers.
+The project is organized into *distinct* modules. Linked list functionality is provided in
+both C and hand-optimized assembly.
+[single instructions processes multiple data elements] SIMD [like an array but not like that] 
+operations demonstrate vector processing capabilities.
 All assembly code uses position-independent addressing and proper stack frames.
 
 This serves as a reference implementation for systems-level programming on
-x86_64, demonstrating register usage, calling conventions, and direct kernel
-communication through syscalls [Like all project maintained].
+x86_64, demonstrating register usage, calling conventions, and data structure
+implementation in both C and assembly [Like all project maintained].
 
 ================================================
