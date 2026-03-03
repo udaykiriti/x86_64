@@ -3,7 +3,7 @@
 %include "macros.inc"
 
 section .bss
-    io_buffer resb 256
+    buf resb 256
 
 section .text
     global asm_echo
@@ -14,7 +14,7 @@ section .text
 asm_echo:
     mov rax, SYS_READ
     mov rdi, STDIN
-    lea rsi, [rel io_buffer]
+    lea rsi, [rel buf]
     mov rdx, 255
     syscall
 
@@ -26,7 +26,7 @@ asm_echo:
     mov rdx, rax
     mov rax, SYS_WRITE
     mov rdi, STDOUT
-    lea rsi, [rel io_buffer]
+    lea rsi, [rel buf]
     syscall
 
     mov rax, r8
