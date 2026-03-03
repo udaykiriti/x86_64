@@ -3,8 +3,8 @@
 %include "macros.inc"
 
 section .data
-    hello_message db "Hello, World!", 0xa
-    message_length equ $ - hello_message
+    msg db "Hello, World!", 0xa
+    len equ $ - msg
 
 section .text
     global _hello
@@ -14,8 +14,8 @@ section .text
 _hello:
     mov rax, SYS_WRITE                  ; syscall number: write
     mov rdi, STDOUT                     ; file descriptor: stdout
-    lea rsi, [rel hello_message]        ; buffer address
-    mov rdx, message_length             ; number of bytes
+    lea rsi, [rel msg]                  ; buffer address
+    mov rdx, len                        ; number of bytes
     syscall
     ret
 
