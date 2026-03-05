@@ -1,14 +1,16 @@
 /*
  * Main entry point for the application.
- * Demonstrates linked list operations and SIMD operations.
+ * Demonstrates linked list, stack operations, and SIMD operations.
  */
 
 #include <stdio.h>
 #include <stdint.h>
 #include "linked.h"
+#include "stack.h"
 #include "simd.h"
 
 extern void _hello(void);
+extern int asm_size(Stack* s);
 
 int main(void) {
     _hello();
@@ -52,7 +54,7 @@ int main(void) {
     printf("C len(): %d\n", len(list));
     printf("ASM len(): %d\n\n", asm_len(list));
 
-    printf("=== SIMD Demo ===\n\n");
+    printf("[=== SIMD Demo ===]\n\n");
     
     int v1[4] = {1, 2, 3, 4};
     int v2[4] = {10, 20, 30, 40};
@@ -70,6 +72,27 @@ int main(void) {
            (unsigned long long)(t1 - t0));
 
     purge(&list);
+
+    printf("\n[=== Stack Demo ===]\n\n");
+    
+    Stack* st = s_new();
+    
+    printf("push: 10, 20, 30\n");
+    s_push(st, 10);
+    s_push(st, 20);
+    s_push(st, 30);
+    s_show(st);
+    printf("size (C): %d\n", s_size(st));
+    printf("size (ASM): %d\n", asm_size(st));
+    printf("top: %d\n\n", s_top(st));
+    
+    printf("pop: %d\n", s_pop(st));
+    printf("pop: %d\n\n", s_pop(st));
+    s_show(st);
+    printf("size (C): %d\n", s_size(st));
+    printf("size (ASM): %d\n", asm_size(st));
+    
+    s_free(st);
 
     return 0;
 }
