@@ -6,11 +6,11 @@ This repo demonstrates systems programming on x86_64 Linux.
 It combines C for logic and I/O with assembly for low-level operations
 and performance-critical code.
 
-The codebase includes a linked list data structure with both C and assembly
-implementation. All modules follow x86_64 calling conventions and ABI standards,
+The codebase includes data structures with both C and assembly
+implementation: linked lists and stacks. All modules follow x86_64 calling conventions and ABI standards,
 showing how modern systems software integrates compiled and assembled code.
-Current examples cover linked list operations (push, append, delete, find, length)
-and SIMD vector operations for high-performance computing.
+Current examples cover linked list operations (push, append, delete, find, length),
+stack operations (push, pop, peek, size), and SIMD vector operations for high-performance computing.
 since it is just only beginning it doesn't contain huge codebase.
 It is only a **initail** structure...
 
