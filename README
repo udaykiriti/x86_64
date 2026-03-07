@@ -2,15 +2,13 @@ x86_64
 
 ================================================
 
-This repo demonstrates systems programming on x86_64 Linux.
+This repo shows systems programming on x86_64 Linux.
 It combines C for logic and I/O with assembly for low-level operations
 and performance-critical code.
 
 The codebase includes data structures with both C and assembly
-implementation: linked lists and stacks. All modules follow x86_64 calling conventions and ABI standards,
+impl: All modules follow x86_64 calling conventions and ABI standards,
 showing how modern systems software integrates compiled and assembled code.
-Current examples cover linked list operations (push, append, delete, find, length),
-stack operations (push, pop, peek, size), and SIMD vector operations for high-performance computing.
 since it is just only beginning it doesn't contain huge codebase.
 It is only a **initail** structure...
 
@@ -21,18 +19,22 @@ Cleaning "make clean" [to clean build artifacts].
 "The build system automatically *compiles* all C sources and *assembles* all
 architecture-specific code, *linking* them into a *single* executable."
 
-------------
+/* 
+   About this repo situation || further details
+   GOTO: curr;
+*/
 
 Architecture
+------------
 
 The project is organized into *distinct* modules. Linked list functionality is provided in
 both C and hand-optimized assembly.
-[single instructions processes multiple data elements] SIMD [like an array but not like that] 
-operations demonstrate vector processing capabilities.
+[DONE]: [single instructions processes multiple data elements] SIMD [like an array but not like that] 
+operations show vector processing capabilities.
 All assembly code uses position-independent addressing and proper stack frames.
 
 This serves as a reference implementation for systems-level programming on
-x86_64, demonstrating register usage, calling conventions, and data structure
+x86_64, showing register usage, calling conventions, and data structure
 implementation in both C and assembly [Like all project maintained].
 
 ================================================
