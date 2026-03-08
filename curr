@@ -1,0 +1,121 @@
+CURR REPO 
+=======================
+
+root:
+/x86_64
+
+1) Curr fldr strcte
+---------------------------
+- src/app/main.c
+- src/asm/hello.asm
+- src/labs/map.c
+- include/macros.inc
+- docs/references
+- docs/way
+- docs/[some png abt arch pic]
+- Makefile
+- README
+
+
+2) Build trgs and cmds
+-----------------------------
+- Build main app:
+  make
+
+- Run main app:
+  ./program
+
+- Build mmap lab binary:
+  make map
+
+- Run mmap lab binary:
+  ./map
+
+- Clean build outputs:
+  make clean
+
+
+3) Current Makefile Behavior
+----------------------------
+- Default target: all -> program
+- C sources: src/app/*.c
+- ASM sources: src/asm/*.asm
+- mmap lab source: src/labs/map.c
+- Output binaries:
+  - program
+  - map
+- Uses dependency files for C builds (-MMD -MP)
+- Warning flags:
+  - -Wall -Wextra -Wpedantic
+
+
+4) Current Main Program
+-----------------------
+File:
+- src/app/main.c
+
+Behavior:
+- Calls external ASM function `_hello()`
+- Exits with return code 0
+
+
+5) Current ASM Module
+---------------------
+File:
+- src/asm/hello.asm
+
+Behavior:
+- Uses Linux x86_64 syscall write
+- Prints "Hello, World!\n" to stdout
+- Uses syscall cnsts from include/macros.inc
+
+
+6) Current mmap Lab Program
+---------------------------
+File:
+- src/labs/map.c
+
+Modes:
+- ./map anon
+- ./map buf
+- ./map file
+- ./map all   (default)
+
+Cases:
+- case 1 (anon):
+  anonymous page mapping + write + munmap
+
+- case 2 (buf):
+  anonymous int buff mapping + fill sqrs + print + munmap
+
+- case 3 (file):
+  file-backed mapping on obj/map.bin + write via mem + msync + readback
+
+Reliability details:
+- Handles partial writes with write_all()
+- Uses negative errno returns from helpers
+- Uses cleanup-oriented ctrl flow for mapping/file resources
+
+
+7) Headers / Constants
+----------------------
+File:
+- include/macros.inc #[contains macro rules for asm lang];
+
+#[!syscalls]
+Contains:
+- SYS_READ, SYS_WRITE, SYS_MMAP, SYS_MUNMAP, SYS_EXIT
+- STDIN, STDOUT, STDERR
+- PROT_READ, PROT_WRITE, MAP_PRIVATE, MAP_ANONYMOUS
+
+
+8) Typical Expected Output
+--------------------------
+- ./program
+  Hello, World!
+
+- ./map all
+  map case 1: anonymous page txt
+  map case 2: int buffer -> 0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225
+  map case 3: file says -> map case 3: file-backed mapping
+

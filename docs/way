@@ -1,0 +1,282 @@
+Topic-Wise Roadmap for Learning x64 and Linux Kernel Architecture
+===============================================================
+
+1) CPU and System Fundamentals
+------------------------------
+Topics:
+- What x64 means: x86_64 ISA, 64-bit registers, instruction pointer, flags.
+- Register roles: general-purpose, stack pointer, base pointer, SIMD registers.
+- Number systems and bit operations: hex, shifts, masks, sign extension.
+- Memory model basics: stack, heap, text, data, bss, virtual address space.
+- Privilege levels: user mode vs kernel mode, ring transitions.
+
+What to practice:
+- Decode simple instructions and predict register/memory state.
+- Draw stack frames manually for small functions.
+- Explain what changes after `call`, `ret`, `push`, `pop`.
+
+Completion check:
+- You can read a 10-20 instruction assembly block and explain it line by line.
+
+
+2) C for Systems Programming
+----------------------------
+Topics:
+- Pointers, arrays, structs, and layout/alignment.
+- Signed vs unsigned behavior, integer promotions.
+- Undefined behavior that matters for low-level code.
+- Memory allocation and lifetime rules.
+- Header/source separation and ABI-visible function signatures.
+
+What to practice:
+- Write C functions and inspect generated assembly.
+- Map struct field offsets to assembly memory operands.
+- Implement small data operations safely with boundary checks.
+
+Completion check:
+- You can predict how a C struct is accessed from assembly (`offset(base)` form).
+
+
+3) x64 Calling Conventions and ABI
+----------------------------------
+Topics:
+- SysV AMD64 ABI: argument registers, return registers, caller/callee-saved regs.
+- Stack alignment rules before function calls.
+- Function prologue/epilogue patterns.
+- Name visibility, symbol linkage, and external declarations.
+- Position-independent addressing (`rel` usage in NASM).
+
+What to practice:
+- Write ASM functions called from C (`add`, `max`, `strlen`, `memcmp` style).
+- Verify argument/return mapping with debugger.
+- Intentionally break ABI once, observe failure, then fix.
+
+Completion check:
+- You can implement and call mixed C+ASM functions without crashes or corruption.
+
+
+4) Core x64 Assembly Patterns
+-----------------------------
+Topics:
+- Addressing modes: immediate, register, base+offset, indexed addressing.
+- Control flow: compare/test, conditional jumps, loops.
+- Arithmetic/logic instructions and flags usage.
+- Memory copy/compare loops and branch behavior.
+- Basic optimization tradeoffs (clarity vs speed).
+
+What to practice:
+- Implement textbook routines: `memcpy`, `memcmp`, scalar vector sum.
+- Compare different loop forms (`dec/jnz`, `cmp/jcc`) in disassembly.
+- Use one routine in C tests and validate output cases.
+
+Completion check:
+- You can build correct loops and reason about flags (`ZF`, `CF`, `SF`, `OF`).
+
+
+5) Tooling and Binary Inspection
+--------------------------------
+Topics:
+- `objdump`, `readelf`, `nm`, `gdb`, and `strace` workflow.
+- ELF sections and symbols: `.text`, `.data`, `.bss`, relocation view.
+- Startup flow: entry symbol to `main`.
+- Debugging registers, memory, and stepping instructions.
+
+What to practice:
+- Disassemble binaries and annotate every instruction in a function.
+- Use `readelf -a` to map symbols and sections to source files.
+- Trace syscalls from a small binary using `strace`.
+
+Completion check:
+- You can go from source line -> symbol -> machine code -> runtime behavior.
+
+
+6) Linux Syscall Interface
+--------------------------
+Topics:
+- Linux syscall mechanism on x86_64.
+- Syscall numbers, argument passing, and return/error conventions.
+- Minimal programs using `_start` and direct `syscall`.
+- Difference between libc wrappers and raw syscalls.
+
+What to practice:
+- Build syscall-only examples: `write`, `exit`, `mmap`.
+- Validate with `strace` and register inspection in `gdb`.
+- Extend sample code to handle simple error paths.
+
+Completion check:
+- You can write and explain a syscall-only assembly program end-to-end.
+
+
+7) SIMD and Micro-Architecture Basics
+-------------------------------------
+Topics:
+- SIMD intent: data parallelism with SSE/AVX.
+- Packed operations (`paddd` and related instructions).
+- Alignment and unaligned loads/stores.
+- Timing basics: TSC, serialization caveats, measurement noise.
+
+What to practice:
+- Implement vector add variants and verify correctness.
+- Measure cycles with serialized TSC and compare variants.
+- Confirm generated code and data movement in disassembly.
+
+Completion check:
+- You can explain why SIMD version differs from scalar in instructions and cost.
+
+
+8) Operating System Internals Prerequisites
+-------------------------------------------
+Topics:
+- Virtual memory and page tables at concept level.
+- Interrupts, exceptions, and trap handling.
+- Context switching and scheduler basics.
+- Synchronization basics: atomic operations, spinlock concept.
+
+What to practice:
+- Draw the lifecycle of a process on syscall/interrupt.
+- Map memory translation steps from VA to PA conceptually.
+- Read selected Linux docs and summarize each in your own words.
+
+Completion check:
+- You can describe how CPU, MMU, and kernel cooperate during a syscall.
+
+
+9) Linux Kernel x86 Source Navigation
+-------------------------------------
+Topics:
+- Directory purpose in `arch/x86/`:
+- `entry/`: syscall and interrupt entry/exit path.
+- `kernel/`: traps, CPU init, SMP-related core paths.
+- `mm/`: x86 memory management specifics.
+- `include/asm/`: architecture-specific interfaces/macros.
+
+What to practice:
+- Trace one path fully: syscall entry -> C handler -> return path.
+- Keep notes: file, function, role, next function called.
+- Build a small call graph for one feature path.
+
+Completion check:
+- You can explain one complete x86 kernel path with exact files/functions.
+
+
+10) Kernel Build, Test, and Safe Experimentation
+------------------------------------------------
+Topics:
+- Kernel build flow and config basics.
+- QEMU-based testing for safe changes.
+- Runtime inspection: `dmesg`, tracepoints, `ftrace`, `perf`.
+- Debugging options: printk strategy, kgdb overview.
+
+What to practice:
+- Build kernel once, boot in VM, verify logs.
+- Add one tiny non-invasive instrumentation change.
+- Rebuild and confirm observable behavior.
+
+Completion check:
+- You can make a controlled kernel change and validate it in a VM.
+
+
+11) Advanced x86 Kernel Topics
+------------------------------
+Topics:
+- SMP details: CPU bring-up, inter-processor interrupts.
+- Locking and scalability concerns.
+- NUMA effects on memory and scheduling behavior.
+- Mitigations and speculation/security-related mechanics.
+- Performance diagnosis from counters and traces.
+
+What to practice:
+- Read targeted commits and LKML discussions for context.
+- Reproduce one performance issue and measure before/after.
+- Compare two kernel paths with trace evidence.
+
+Completion check:
+- You can connect code changes to measurable behavior and architectural cause.
+
+
+Learning Method (Topic Cycle)
+-----------------------------
+For each topic:
+1. Read concept from primary docs/textbook.
+2. Implement one small code artifact.
+3. Inspect binary/disassembly/debug trace.
+4. Write a short note: "what happened and why."
+5. Add one edge-case or failure-case test.
+
+
+Immediate Next Actions in This Repo
+-----------------------------------
+1. Study `src/asm/hello.asm` and explain register use for `write`.
+2. Annotate `objdump -d program` output for `_hello` in `docs/`.
+3. Extend `src/labs/map.c` with one additional mmap case.
+
+
+Practical Coding Track (Hands-On Checklist)
+-------------------------------------------
+1) Build and Inspect Every Binary
+- Run `make clean && make`.
+- Run `make map`.
+- Inspect symbols: `nm program`, `nm map`.
+- Inspect sections: `readelf -S program`, `readelf -S map`.
+- Disassemble: `objdump -d program`, `objdump -d map`.
+Deliverable:
+- One markdown file in `docs/` with 10 instruction annotations.
+
+2) Syscall Tracing Practice
+- Run `strace ./program`.
+- Run `strace ./map`.
+- Identify `mmap`, `munmap`, `write`, `close`, `read` in trace.
+Deliverable:
+- Short syscall sequence notes for each binary.
+
+3) Memory Mapping Drills in `src/labs/map.c`
+- Add a case for `PROT_READ` only mapping and confirm write fails safely.
+- Add a case for mapping two pages and writing across boundary.
+- Add a case for mapping file as `MAP_PRIVATE` and compare behavior with `MAP_SHARED`.
+Deliverable:
+- Console output showing each case result and expected behavior.
+
+4) Error-Path Engineering
+- Force each error path once (bad fd, zero length where invalid, permission mismatch).
+- Ensure all failures return clear error text with `strerror`.
+- Confirm resources are cleaned in every failure branch.
+Deliverable:
+- Error matrix: input -> expected errno -> observed output.
+
+5) GDB Register-Level Debugging
+- Break at `_hello` and step through instructions.
+- Observe `rax`, `rdi`, `rsi`, `rdx` before `syscall`.
+- Break inside one mmap case and inspect mapped buffer memory.
+Deliverable:
+- Register snapshots and memory dump notes in `docs/`.
+
+6) ABI and Calling-Convention Exercises
+- Add one ASM function in `src/asm/`:
+- `long add(long a, long b)`
+- `long max(long a, long b)`
+- Call it from `src/app/main.c` and print outputs.
+- Verify argument registers and return register in disassembly.
+Deliverable:
+- Matching C result and ASM result for at least 5 test inputs.
+
+7) Performance Baseline Habits
+- Run each binary 10 times and record elapsed time.
+- Compare `write` direct syscall path vs stdio printing path.
+- Keep measurements simple and reproducible.
+Deliverable:
+- Small table in `docs/` with command, run count, and min/avg/max.
+
+8) Code Quality Routine (Linux Style)
+- Keep function scope `static` unless externally needed.
+- Use one exit path when cleanup is required (`goto out` pattern).
+- Return negative errno from helpers and print readable message at top-level.
+- Compile with strict warnings and keep build warning-free.
+Deliverable:
+- `make` output with zero warnings.
+
+9) Kernel Transition Prep (Local Study)
+- Read `arch/x86/entry/` syscall path in kernel source.
+- Map your user-space syscall flow to kernel entry concepts.
+- Write one page: userspace instruction -> kernel handling -> return.
+Deliverable:
+- `docs/kernel-syscall-path.md` summary with exact file/function names.
