@@ -6,3 +6,47 @@ References
   https://cs.stackexchange.com/questions/169854/modern-x86-64-architecture-diagram
   https://en.wikipedia.org/wiki/X86-64
   https://ocw.mit.edu/courses/6-035-computer-language-engineering-sma-5502-fall-2005/b69fca1329e6f0ddacc5a055ef033f3e_x86_64_guide.pdf
+
+* Official x86 Architecture Manuals:
+  https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
+  https://www.amd.com/en/developer/x86-64-abi.html
+  https://www.amd.com/system/files/TechDocs/24594.pdf
+
+* ABI and Calling Convention (SysV AMD64):
+  https://refspecs.linuxbase.org/elf/x86_64-abi-0.99.pdf
+  https://wiki.osdev.org/System_V_ABI
+
+* Linux Kernel Documentation:
+  https://docs.kernel.org/
+  https://docs.kernel.org/arch/x86/index.html
+  https://docs.kernel.org/core-api/index.html
+  https://docs.kernel.org/admin-guide/mm/index.html
+
+* Linux Syscalls and man pages:
+  https://man7.org/linux/man-pages/man2/syscall.2.html
+  https://man7.org/linux/man-pages/man2/mmap.2.html
+  https://man7.org/linux/man-pages/man2/munmap.2.html
+  https://man7.org/linux/man-pages/man2/write.2.html
+
+* Tooling (Disassembly / ELF / Debugging):
+  https://sourceware.org/binutils/docs/binutils/objdump.html
+  https://sourceware.org/binutils/docs/binutils/readelf.html
+  https://sourceware.org/gdb/current/onlinedocs/gdb/
+  https://strace.io/
+
+* NASM Documentation:
+  https://www.nasm.us/docs.php
+
+* Stack Overflow / Stack Exchange (practical Q&A):
+  https://stackoverflow.com/questions/tagged/x86-64
+  https://stackoverflow.com/questions/tagged/assembly
+  https://stackoverflow.com/questions/tagged/linux-kernel
+  https://unix.stackexchange.com/
+  https://cs.stackexchange.com/
+
+* College / University Course References:
+  https://pdos.csail.mit.edu/6.828/
+  https://cs162.org/
+  https://cs61.seas.harvard.edu/site/
+  https://ocw.mit.edu/courses/6-1810-operating-system-engineering-fall-2023/
+  https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/
