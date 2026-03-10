@@ -16,6 +16,7 @@
 #include "map.h"
 
 extern void _hello(void);
+extern long _add(long a, long b);
 
 int main(int argc, char **argv)
 {
@@ -31,8 +32,10 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	if (strcmp(mode, "hello") == 0 || strcmp(mode, "all") == 0)
+	if (strcmp(mode, "hello") == 0 || strcmp(mode, "all") == 0) {
 		_hello();
+		printf("_add(3, 4) = %ld\n", _add(3, 4));
+	}
 
 	if (strcmp(mode, "anon") == 0 || strcmp(mode, "all") == 0) {
 		ret = anon();
