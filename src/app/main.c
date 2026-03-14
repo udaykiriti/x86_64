@@ -3,20 +3,41 @@
  * Model  : C driver for x86_64 ASM routines
  * Goal   : run assembly hello and mmap demos
  *
- * Usage: ./program [hello|anon|buf|file|all]
+ * Usage: ./program [hello|anon|buf|file|sysinfo|all]
  *   hello - run ASM hello routine
  *   anon  - anonymous page mapping
  *   buf   - anonymous integer buffer
  *   file  - file-backed shared mapping
+ *   sysinfo - show basic runtime system information
  *   all   - run all in order (default)
  */
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "map.h"
 
 extern void _hello(void);
 extern long _add(long a, long b);
+
+static void print_usage(const char *argv0)
+{
+	fprintf(stderr,
+		"usage: %s [hello|anon|buf|file|sysinfo|all]\n",
+		argv0);
+}
+
+static int sysinfo(void)
+{
+	long page_size = sysconf(_SC_PAGESIZE);
+
+	if (page_size <= 0)
+		return 1;
+
+	printf("sysinfo: page_size=%ld bytes, pointer_size=%zu bytes\n",
+	       page_size, sizeof(void *));
+	return 0;
+}
 
 int main(int argc, char **argv)
 {
@@ -27,8 +48,9 @@ int main(int argc, char **argv)
 	    strcmp(mode, "anon")  != 0 &&
 	    strcmp(mode, "buf")   != 0 &&
 	    strcmp(mode, "file")  != 0 &&
+	    strcmp(mode, "sysinfo") != 0 &&
 	    strcmp(mode, "all")   != 0) {
-		fprintf(stderr, "usage: %s [hello|anon|buf|file|all]\n", argv[0]);
+		print_usage(argv[0]);
 		return 1;
 	}
 
@@ -61,6 +83,13 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if (strcmp(mode, "sysinfo") == 0 || strcmp(mode, "all") == 0) {
+		ret = sysinfo();
+		if (ret != 0) {
+			fprintf(stderr, "sysinfo: failed to read system info\n");
+			return 1;
+		}
+	}
+
 	return 0;
 }
-
