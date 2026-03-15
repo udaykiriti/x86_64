@@ -64,12 +64,20 @@ help:
 	@echo "Targets:"
 	@echo "  make       - build the program"
 	@echo "  make run   - build and run the program"
+	@echo "  make test  - run smoke checks across all modes"
 	@echo "  make clean - remove build artifacts"
 	@echo "  make help  - show this message"
+
+test: $(TARGET)
+	@set -e; \
+	for mode in hello anon buf file sysinfo all; do \
+		echo "==> smoke: $$mode"; \
+		./$(TARGET) $$mode; \
+	done
 
 clean:
 	rm -rf $(OBJDIR) $(BINDIR)
 
-.PHONY: all run help clean
+.PHONY: all run help test clean
 
 -include $(DEPS)
