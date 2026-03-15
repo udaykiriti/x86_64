@@ -3,7 +3,7 @@
  * Model  : C driver for x86_64 ASM routines
  * Goal   : run assembly hello and mmap demos
  *
- * Usage: ./program [hello|anon|buf|file|sysinfo|all]
+ * Usage: ./bin/program [hello|anon|buf|file|sysinfo|all]
  *   hello - run ASM hello routine
  *   anon  - anonymous page mapping
  *   buf   - anonymous integer buffer

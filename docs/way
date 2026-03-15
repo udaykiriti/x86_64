@@ -207,29 +207,28 @@ For each topic:
 Immediate Next Actions in This Repo
 -----------------------------------
 1. Study `src/asm/hello.asm` and explain register use for `write`.
-2. Annotate `objdump -d program` output for `_hello` in `docs/`.
-3. Extend `src/labs/map.c` with one additional mmap case.
+2. Annotate `objdump -d bin/program` output for `_hello` in `docs/`.
+3. Extend `src/labs/mmap/map.c` with one additional mmap case.
 
 
 Practical Coding Track (Hands-On Checklist)
 -------------------------------------------
 1) Build and Inspect Every Binary
 - Run `make clean && make`.
-- Run `make map`.
-- Inspect symbols: `nm program`, `nm map`.
-- Inspect sections: `readelf -S program`, `readelf -S map`.
-- Disassemble: `objdump -d program`, `objdump -d map`.
+- Run `make`.
+- Inspect symbols: `nm bin/program`.
+- Inspect sections: `readelf -S bin/program`.
+- Disassemble: `objdump -d bin/program`.
 Deliverable:
 - One markdown file in `docs/` with 10 instruction annotations.
 
 2) Syscall Tracing Practice
-- Run `strace ./program`.
-- Run `strace ./map`.
+- Run `strace ./bin/program`.
 - Identify `mmap`, `munmap`, `write`, `close`, `read` in trace.
 Deliverable:
 - Short syscall sequence notes for each binary.
 
-3) Memory Mapping Drills in `src/labs/map.c`
+3) Memory Mapping Drills in `src/labs/mmap/map.c`
 - Add a case for `PROT_READ` only mapping and confirm write fails safely.
 - Add a case for mapping two pages and writing across boundary.
 - Add a case for mapping file as `MAP_PRIVATE` and compare behavior with `MAP_SHARED`.
