@@ -2,14 +2,16 @@ CURR REPO
 =======================
 
 root:
-/x86_64
+/home/uday/x86_64
 
-1) Curr fldr strcte
+1) Curr folder structure
 ---------------------------
 - src/app/main.c
 - src/asm/hello.asm
-- src/labs/map.c
-- include/macros.inc
+- src/asm/math.asm
+- src/labs/mmap/map.c
+- include/asm/macros.inc
+- include/c/map.h
 - docs/references
 - docs/way
 - docs/[some png abt arch pic]
@@ -17,19 +19,16 @@ root:
 - README
 
 
-2) Build trgs and cmds
+2) Build targets and commands
 -----------------------------
 - Build main app:
   make
 
 - Run main app:
-  ./program
+  ./bin/program
 
-- Build mmap lab binary:
-  make map
-
-- Run mmap lab binary:
-  ./map
+- Run default flow (hello + mmap cases + sysinfo):
+  make run
 
 - Clean build outputs:
   make clean
@@ -37,13 +36,12 @@ root:
 
 3) Current Makefile Behavior
 ----------------------------
-- Default target: all -> program
+- Default target: all -> bin/program
 - C sources: src/app/*.c
 - ASM sources: src/asm/*.asm
-- mmap lab source: src/labs/map.c
-- Output binaries:
-  - program
-  - map
+- mmap lab source: src/labs/mmap/map.c
+- Output binary:
+  - bin/program
 - Uses dependency files for C builds (-MMD -MP)
 - Warning flags:
   - -Wall -Wextra -Wpedantic
@@ -56,51 +54,55 @@ File:
 
 Behavior:
 - Calls external ASM function `_hello()`
-- Exits with return code 0
+- Calls ASM math function `_add()`
+- Runs mmap demos via `anon()`, `intbuf()`, and `filemap()`
+- Prints basic runtime details via `sysinfo()`
 
 
-5) Current ASM Module
----------------------
-File:
+5) Current ASM Modules
+----------------------
+Files:
 - src/asm/hello.asm
+- src/asm/math.asm
 
 Behavior:
 - Uses Linux x86_64 syscall write
 - Prints "Hello, World!\n" to stdout
-- Uses syscall cnsts from include/macros.inc
+- Uses syscall constants from include/asm/macros.inc
+- Provides `_add(a, b)` in assembly math module
 
 
 6) Current mmap Lab Program
 ---------------------------
 File:
-- src/labs/map.c
+- src/labs/mmap/map.c
 
 Modes:
-- ./map anon
-- ./map buf
-- ./map file
-- ./map all   (default)
+- ./bin/program anon
+- ./bin/program buf
+- ./bin/program file
+- ./bin/program all   (default)
 
 Cases:
 - case 1 (anon):
   anonymous page mapping + write + munmap
 
 - case 2 (buf):
-  anonymous int buff mapping + fill sqrs + print + munmap
+  anonymous int buffer mapping + fill squares + print + munmap
 
 - case 3 (file):
   file-backed mapping on obj/map.bin + write via mem + msync + readback
 
 Reliability details:
-- Handles partial writes with write_all()
+- Handles partial writes with writeall()
 - Uses negative errno returns from helpers
-- Uses cleanup-oriented ctrl flow for mapping/file resources
+- Uses cleanup-oriented control flow for mapping/file resources
 
 
 7) Headers / Constants
 ----------------------
 File:
-- include/macros.inc #[contains macro rules for asm lang];
+- include/asm/macros.inc #[contains macro rules for asm lang];
 
 #[!syscalls]
 Contains:
@@ -111,11 +113,12 @@ Contains:
 
 8) Typical Expected Output
 --------------------------
-- ./program
+- ./bin/program
   Hello, World!
+  _add(3, 4) = 7
 
-- ./map all
-  map case 1: anonymous page txt
+- ./bin/program all
+  map case 1: anonymous page text
   map case 2: int buffer -> 0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225
   map case 3: file says -> map case 3: file-backed mapping
-
+  sysinfo: page_size=4096 bytes, pointer_size=8 bytes
