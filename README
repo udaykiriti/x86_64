@@ -7,7 +7,9 @@ It combines C for logic and I/O with assembly for low-level operations
 and performance-critical code.
 
 The codebase includes data structures with both C and assembly
-impl: All modules follow x86_64 calling conventions and ABI standards,
+impl: All modules follow x86_64 calling conventions and ABI (Application Binary Interface)
+standards, the interface that runtimes and operating systems to use express low-level 
+binary details. Those details can include calling conventions, symbol mangling.
 showing how modern systems software integrates compiled and assembled code.
 since it is just only beginning it doesn't contain huge codebase.
 It is only a **initail** structure...
