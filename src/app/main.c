@@ -20,11 +20,11 @@
 extern void _hello(void);
 extern long _add(long a, long b);
 
-static void print_usage(const char *argv0)
+static void usage(const char *name)
 {
 	fprintf(stderr,
 		"usage: %s [hello|anon|buf|file|sysinfo|all]\n",
-		argv0);
+		name);
 }
 
 static int sysinfo(void)
@@ -42,6 +42,8 @@ static int sysinfo(void)
 int main(int argc, char **argv)
 {
 	const char *mode = (argc > 1) ? argv[1] : "all";
+	const long  first = 0x0003;
+	const long  second = 0x0004;
 	int ret;
 
 	if (strcmp(mode, "hello") != 0 &&
@@ -50,13 +52,14 @@ int main(int argc, char **argv)
 	    strcmp(mode, "file")  != 0 &&
 	    strcmp(mode, "sysinfo") != 0 &&
 	    strcmp(mode, "all")   != 0) {
-		print_usage(argv[0]);
+		usage(argv[0]);
 		return 1;
 	}
 
 	if (strcmp(mode, "hello") == 0 || strcmp(mode, "all") == 0) {
 		_hello();
-		printf("_add(3, 4) = %ld\n", _add(3, 4));
+		printf("_add(%ld, %ld) = %ld\n",
+		       first, second, _add(first, second));
 	}
 
 	if (strcmp(mode, "anon") == 0 || strcmp(mode, "all") == 0) {

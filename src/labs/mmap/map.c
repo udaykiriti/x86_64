@@ -14,11 +14,11 @@
 #include <unistd.h>
 
 /*
- * wfall - write exactly len bytes to fd, retrying on EINTR.
+ * writeall - write exactly len bytes to fd, retrying on EINTR.
  *
  * Returns 0 on success, negative errno on failure.
  */
-static int wfall(int fd, const void *buf, size_t len)
+static int writeall(int fd, const void *buf, size_t len)
 {
 	const char *p = buf;
 
@@ -42,7 +42,7 @@ static int wfall(int fd, const void *buf, size_t len)
  * anon - Case 1: Anonymous mapping
  *
  * Allocates one page with MAP_ANONYMOUS, copies a string into it,
- * writes it to stdout via wfall, then unmaps the page.
+ * writes it to stdout via writeall, then unmaps the page.
  *
  * Returns 0 on success, negative errno on failure.
  */
@@ -66,7 +66,7 @@ int anon(void)
 		return -errno;
 
 	memcpy(buf, msg, msglen);
-	ret = wfall(STDOUT_FILENO, buf, msglen);
+	ret = writeall(STDOUT_FILENO, buf, msglen);
 
 	if (munmap(buf, pgsz) != 0 && ret == 0)
 		ret = -errno;
@@ -84,17 +84,18 @@ int anon(void)
  */
 int intbuf(void)
 {
-	const size_t n = 16;
+	const size_t count = 0x0010;
+	const int    zero  = 0x0000;
 	int         *arr;
 	size_t       i;
-	int          ret = 0;
+	int          ret = zero;
 
-	arr = mmap(NULL, n * sizeof(*arr), PROT_READ | PROT_WRITE,
+	arr = mmap(NULL, count * sizeof(*arr), PROT_READ | PROT_WRITE,
 		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (arr == MAP_FAILED)
 		return -errno;
 
-	for (i = 0; i < n; i++)
+	for (i = 0; i < count; i++)
 		arr[i] = (int)(i * i);
 
 	if (printf("map case 2: int buffer ->") < 0) {
@@ -102,7 +103,7 @@ int intbuf(void)
 		goto out;
 	}
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < count; i++) {
 		if (printf(" %d", arr[i]) < 0) {
 			ret = -EIO;
 			goto out;
@@ -113,7 +114,7 @@ int intbuf(void)
 		ret = -EIO;
 
 out:
-	if (munmap(arr, n * sizeof(*arr)) != 0 && ret == 0)
+	if (munmap(arr, count * sizeof(*arr)) != 0 && ret == 0)
 		ret = -errno;
 
 	return ret;
@@ -132,8 +133,9 @@ int filemap(void)
 {
 	const char  *path   = "obj/map.bin";
 	const char  *msg    = "map case 3: file-backed mapping";
-	const size_t mapsz  = 32;
+	const size_t mapsize = 0x0020;
 	const size_t msglen = strlen(msg);
+	const int    zero   = 0x0000;
 	char         rbuf[64];
 	char        *mem;
 	ssize_t      rd;
@@ -144,26 +146,26 @@ int filemap(void)
 	if (fd < 0)
 		return -errno;
 
-	if (ftruncate(fd, (off_t)mapsz) != 0) {
+	if (ftruncate(fd, (off_t)mapsize) != 0) {
 		ret = -errno;
 		goto ofd;
 	}
 
-	mem = mmap(NULL, mapsz, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	mem = mmap(NULL, mapsize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if (mem == MAP_FAILED) {
 		ret = -errno;
 		goto ofd;
 	}
 
-	memset(mem, 0, mapsz);
-	memcpy(mem, msg, msglen < mapsz ? msglen : mapsz - 1);
+	memset(mem, zero, mapsize);
+	memcpy(mem, msg, msglen < mapsize ? msglen : mapsize - 1);
 
-	if (msync(mem, mapsz, MS_SYNC) != 0) {
+	if (msync(mem, mapsize, MS_SYNC) != 0) {
 		ret = -errno;
 		goto omap;
 	}
 
-	if (munmap(mem, mapsz) != 0) {
+	if (munmap(mem, mapsize) != 0) {
 		ret = -errno;
 		goto ofd;
 	}
@@ -174,8 +176,8 @@ int filemap(void)
 		goto ofd;
 	}
 
-	memset(rbuf, 0, sizeof(rbuf));
-	rd = read(fd, rbuf, mapsz);
+	memset(rbuf, zero, sizeof(rbuf));
+	rd = read(fd, rbuf, mapsize);
 	if (rd < 0) {
 		ret = -errno;
 		goto ofd;
@@ -185,7 +187,7 @@ int filemap(void)
 		ret = -EIO;
 
 omap:
-	if (mem != NULL && munmap(mem, mapsz) != 0 && ret == 0)
+	if (mem != NULL && munmap(mem, mapsize) != 0 && ret == 0)
 		ret = -errno;
 ofd:
 	if (close(fd) != 0 && ret == 0)
