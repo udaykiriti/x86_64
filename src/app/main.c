@@ -20,7 +20,7 @@
 extern void _hello(void);
 extern long _add(long a, long b);
 
-enum run_mode {
+enum mode {
 	MODE_INVALID = 0,
 	MODE_HELLO,
 	MODE_ANON,
@@ -30,12 +30,12 @@ enum run_mode {
 	MODE_ALL,
 };
 
-struct mode_entry {
+struct entry {
 	const char *name;
-	enum run_mode mode;
+	enum mode id;
 };
 
-static const struct mode_entry mode_table[] = {
+static const struct entry modes[] = {
 	{ "hello", MODE_HELLO },
 	{ "anon", MODE_ANON },
 	{ "buf", MODE_BUF },
@@ -51,16 +51,16 @@ static void usage(const char *name)
 		name);
 }
 
-static enum run_mode parse_mode(const char *mode)
+static enum mode parse(const char *name)
 {
 	size_t i;
 
-	if (mode == NULL)
+	if (name == NULL)
 		return MODE_INVALID;
 
-	for (i = 0; i < sizeof(mode_table) / sizeof(mode_table[0]); i++) {
-		if (strcmp(mode, mode_table[i].name) == 0)
-			return mode_table[i].mode;
+	for (i = 0; i < sizeof(modes) / sizeof(modes[0]); i++) {
+		if (strcmp(name, modes[i].name) == 0)
+			return modes[i].id;
 	}
 
 	return MODE_INVALID;
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 	const char *name = (argc > 1) ? argv[1] : "all";
 	const long  left = 0x0003;
 	const long  right = 0x0004;
-	enum run_mode mode = parse_mode(name);
+	enum mode mode = parse(name);
 	int ret;
 
 	if (argc > 2) {
