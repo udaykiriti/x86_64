@@ -30,6 +30,8 @@ static int writeall(int fd, const void *buf, size_t len)
 				continue;
 			return -errno;
 		}
+		if (n == 0)
+			return -EIO;
 
 		p   += (size_t)n;
 		len -= (size_t)n;
