@@ -182,6 +182,14 @@ int filemap(void)
 		ret = -errno;
 		goto ofd;
 	}
+	if ((size_t)rd != mapsize) {
+		ret = -EIO;
+		goto ofd;
+	}
+	if (memcmp(rbuf, msg, msglen) != 0) {
+		ret = -EIO;
+		goto ofd;
+	}
 
 	if (printf("map case 3: file says -> %s\n", rbuf) < 0)
 		ret = -EIO;

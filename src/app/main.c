@@ -84,8 +84,11 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_HELLO || mode == MODE_ALL) {
 		_hello();
-		printf("_add(%ld, %ld) = %ld\n",
-		       first, second, _add(first, second));
+		if (printf("_add(%ld, %ld) = %ld\n",
+			   first, second, _add(first, second)) < 0)
+			return 1;
+		if (fflush(stdout) != 0)
+			return 1;
 	}
 
 	if (mode == MODE_ANON || mode == MODE_ALL) {
