@@ -68,13 +68,11 @@ static enum mode parse(const char *name)
 
 static int sysinfo(void)
 {
-	long pagesize = sysconf(_SC_PAGESIZE);
-
-	if (pagesize <= 0)
+	if (sysconf(_SC_PAGESIZE) <= 0)
 		return -1;
 
 	if (printf("sysinfo: page_size=%ld bytes, pointer_size=%zu bytes\n",
-		   pagesize, sizeof(void *)) < 0)
+		   sysconf(_SC_PAGESIZE), sizeof(void *)) < 0)
 		return -1;
 
 	return 0;
