@@ -86,13 +86,14 @@ int anon(void)
  */
 int intbuf(void)
 {
-	const size_t count = 0x0010;
+	enum { count = 0x0010 };
 	const int    zero  = 0x0000;
+	const size_t size  = count * sizeof(int);
 	int         *arr;
 	size_t       i;
 	int          ret = zero;
 
-	arr = mmap(NULL, count * sizeof(*arr), PROT_READ | PROT_WRITE,
+	arr = mmap(NULL, size, PROT_READ | PROT_WRITE,
 		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 	if (arr == MAP_FAILED)
 		return -errno;
@@ -116,7 +117,7 @@ int intbuf(void)
 		ret = -EIO;
 
 out:
-	if (munmap(arr, count * sizeof(*arr)) != 0 && ret == 0)
+	if (munmap(arr, size) != 0 && ret == 0)
 		ret = -errno;
 
 	return ret;
