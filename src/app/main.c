@@ -30,6 +30,20 @@ enum run_mode {
 	MODE_ALL,
 };
 
+struct mode_entry {
+	const char *name;
+	enum run_mode mode;
+};
+
+static const struct mode_entry mode_table[] = {
+	{ "hello", MODE_HELLO },
+	{ "anon", MODE_ANON },
+	{ "buf", MODE_BUF },
+	{ "file", MODE_FILE },
+	{ "sysinfo", MODE_SYSINFO },
+	{ "all", MODE_ALL },
+};
+
 static void usage(const char *name)
 {
 	fprintf(stderr,
@@ -39,34 +53,28 @@ static void usage(const char *name)
 
 static enum run_mode parse_mode(const char *mode)
 {
+	size_t i;
+
 	if (mode == NULL)
 		return MODE_INVALID;
 
-	if (strcmp(mode, "hello") == 0)
-		return MODE_HELLO;
-	if (strcmp(mode, "anon") == 0)
-		return MODE_ANON;
-	if (strcmp(mode, "buf") == 0)
-		return MODE_BUF;
-	if (strcmp(mode, "file") == 0)
-		return MODE_FILE;
-	if (strcmp(mode, "sysinfo") == 0)
-		return MODE_SYSINFO;
-	if (strcmp(mode, "all") == 0)
-		return MODE_ALL;
+	for (i = 0; i < sizeof(mode_table) / sizeof(mode_table[0]); i++) {
+		if (strcmp(mode, mode_table[i].name) == 0)
+			return mode_table[i].mode;
+	}
 
 	return MODE_INVALID;
 }
 
 static int sysinfo(void)
 {
-	long page_size = sysconf(_SC_PAGESIZE);
+	long pagesize = sysconf(_SC_PAGESIZE);
 
-	if (page_size <= 0)
+	if (pagesize <= 0)
 		return -1;
 
 	if (printf("sysinfo: page_size=%ld bytes, pointer_size=%zu bytes\n",
-		   page_size, sizeof(void *)) < 0)
+		   pagesize, sizeof(void *)) < 0)
 		return -1;
 
 	return 0;
@@ -74,10 +82,10 @@ static int sysinfo(void)
 
 int main(int argc, char **argv)
 {
-	const char *mode_name = (argc > 1) ? argv[1] : "all";
-	const long  first = 0x0003;
-	const long  second = 0x0004;
-	enum run_mode mode = parse_mode(mode_name);
+	const char *name = (argc > 1) ? argv[1] : "all";
+	const long  left = 0x0003;
+	const long  right = 0x0004;
+	enum run_mode mode = parse_mode(name);
 	int ret;
 
 	if (argc > 2) {
@@ -93,7 +101,7 @@ int main(int argc, char **argv)
 	if (mode == MODE_HELLO || mode == MODE_ALL) {
 		_hello();
 		if (printf("_add(%ld, %ld) = %ld\n",
-			   first, second, _add(first, second)) < 0)
+			   left, right, _add(left, right)) < 0)
 			return 1;
 		if (fflush(stdout) != 0)
 			return 1;
