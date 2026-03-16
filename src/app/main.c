@@ -39,6 +39,9 @@ static void usage(const char *name)
 
 static enum run_mode parse_mode(const char *mode)
 {
+	if (mode == NULL)
+		return MODE_INVALID;
+
 	if (strcmp(mode, "hello") == 0)
 		return MODE_HELLO;
 	if (strcmp(mode, "anon") == 0)
@@ -76,6 +79,11 @@ int main(int argc, char **argv)
 	const long  second = 0x0004;
 	enum run_mode mode = parse_mode(mode_name);
 	int ret;
+
+	if (argc > 2) {
+		usage(argv[0]);
+		return 1;
+	}
 
 	if (mode == MODE_INVALID) {
 		usage(argv[0]);
