@@ -101,9 +101,8 @@ int main(int argc, char **argv)
 	if (mode == MODE_HELLO || mode == MODE_ALL) {
 		_hello();
 		if (printf("_add(%ld, %ld) = %ld\n",
-			   left, right, _add(left, right)) < 0)
-			return 1;
-		if (fflush(stdout) != 0)
+			   left, right, _add(left, right)) < 0 ||
+		    fflush(stdout) != 0)
 			return 1;
 	}
 
