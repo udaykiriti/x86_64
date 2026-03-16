@@ -86,12 +86,11 @@ int anon(void)
  */
 int intbuf(void)
 {
-	enum { count = 0x0010 };
-	const int    zero  = 0x0000;
+	const size_t count = 16;
 	const size_t size  = count * sizeof(int);
 	int         *arr;
 	size_t       i;
-	int          ret = zero;
+	int          ret = 0;
 
 	arr = mmap(NULL, size, PROT_READ | PROT_WRITE,
 		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -136,9 +135,8 @@ int filemap(void)
 {
 	const char  *path   = "obj/map.bin";
 	const char  *msg    = "map case 3: file-backed mapping";
-	const size_t mapsize = 0x0020;
+	const size_t mapsize = 32;
 	const size_t msglen = strlen(msg);
-	const int    zero   = 0x0000;
 	char         rbuf[64];
 	char        *mem;
 	ssize_t      rd;
@@ -160,7 +158,7 @@ int filemap(void)
 		goto ofd;
 	}
 
-	memset(mem, zero, mapsize);
+	memset(mem, 0, mapsize);
 	memcpy(mem, msg, msglen < mapsize ? msglen : mapsize - 1);
 
 	if (msync(mem, mapsize, MS_SYNC) != 0) {
@@ -179,7 +177,7 @@ int filemap(void)
 		goto ofd;
 	}
 
-	memset(rbuf, zero, sizeof(rbuf));
+	memset(rbuf, 0, sizeof(rbuf));
 	rd = read(fd, rbuf, mapsize);
 	if (rd < 0) {
 		ret = -errno;
