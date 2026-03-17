@@ -56,7 +56,19 @@ Behavior:
 - Calls external ASM function `_hello()`
 - Calls ASM math function `_add()`
 - Runs mmap demos via `anon()`, `intbuf()`, and `filemap()`
+- Runs SIMD demo via `_vec_add4()`
 - Prints basic runtime details via `sysinfo()`
+
+Modes
+-----
+
+- `hello`   direct syscall hello from assembly plus scalar `_add`
+- `anon`    anonymous page mapping demo
+- `buf`     anonymous integer buffer demo
+- `file`    file-backed shared mapping demo
+- `simd`    SSE2 vector add on 4 integers in assembly
+- `sysinfo` page size and pointer size
+- `all`     run every demo in sequence
 
 
 5) Current ASM Modules
@@ -64,6 +76,7 @@ Behavior:
 Files:
 - src/asm/hello.asm
 - src/asm/math.asm
+- src/asm/simd.asm
 
 Behavior:
 - Uses Linux x86_64 syscall write

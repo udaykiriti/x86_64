@@ -3,11 +3,12 @@
  * Model  : C driver for x86_64 ASM routines
  * Goal   : run assembly hello and mmap demos
  *
- * Usage: ./bin/program [hello|anon|buf|file|sysinfo|all]
+ * Usage: ./bin/program [hello|anon|buf|file|simd|sysinfo|all]
  *   hello - run ASM hello routine
  *   anon  - anonymous page mapping
  *   buf   - anonymous integer buffer
  *   file  - file-backed shared mapping
+ *   simd  - add two integer vectors in ASM with SSE2
  *   sysinfo - show basic runtime system information
  *   all   - run all in order (default)
  */
@@ -19,6 +20,7 @@
 
 extern void _hello(void);
 extern long _add(long a, long b);
+extern void vecadd4(const int *a, const int *b, int *c);
 
 enum mode {
 	MODE_INVALID = 0,
@@ -26,6 +28,7 @@ enum mode {
 	MODE_ANON,
 	MODE_BUF,
 	MODE_FILE,
+	MODE_SIMD,
 	MODE_SYSINFO,
 	MODE_ALL,
 };
@@ -40,6 +43,7 @@ static const struct entry modes[] = {
 	{ "anon", MODE_ANON },
 	{ "buf", MODE_BUF },
 	{ "file", MODE_FILE },
+	{ "simd", MODE_SIMD },
 	{ "sysinfo", MODE_SYSINFO },
 	{ "all", MODE_ALL },
 };
@@ -47,7 +51,7 @@ static const struct entry modes[] = {
 static void usage(const char *name)
 {
 	fprintf(stderr,
-		"usage: %s [hello|anon|buf|file|sysinfo|all]\n",
+		"usage: %s [hello|anon|buf|file|simd|sysinfo|all]\n",
 		name);
 }
 
@@ -73,6 +77,29 @@ static int sysinfo(void)
 
 	if (printf("sysinfo: page_size=%ld bytes, pointer_size=%zu bytes\n",
 		   sysconf(_SC_PAGESIZE), sizeof(void *)) < 0)
+		return -1;
+
+	return 0;
+}
+
+static int simd(void)
+{
+	const int a[4] = { 1, 2, 3, 4 };
+	const int b[4] = { 10, 20, 30, 40 };
+	int c[4];
+	size_t i;
+
+	vecadd4(a, b, c);
+
+	if (printf("simd: vector add ->") < 0)
+		return -1;
+
+	for (i = 0; i < sizeof(c) / sizeof(c[0]); i++) {
+		if (printf(" %d", c[i]) < 0)
+			return -1;
+	}
+
+	if (putchar('\n') == EOF)
 		return -1;
 
 	return 0;
@@ -124,6 +151,14 @@ int main(int argc, char **argv)
 		ret = filemap();
 		if (ret != 0) {
 			fprintf(stderr, "filemap: %s\n", strerror(-ret));
+			return 1;
+		}
+	}
+
+	if (mode == MODE_SIMD || mode == MODE_ALL) {
+		ret = simd();
+		if (ret != 0) {
+			fprintf(stderr, "simd: failed to run vector demo\n");
 			return 1;
 		}
 	}
