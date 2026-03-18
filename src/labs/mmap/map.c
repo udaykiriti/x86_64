@@ -204,3 +204,82 @@ ofd:
 
 	return ret;
 }
+
+/*
+ * cowmap - Case 4: File-backed private mapping with copy-on-write
+ *
+ * Creates a file with seed data, maps it MAP_PRIVATE, modifies the mapped
+ * bytes, then reads the file back through the descriptor to show the file
+ * contents were not changed by the private write.
+ *
+ * Returns 0 on success, negative errno on failure.
+ */
+int cowmap(void)
+{
+	const char  *path      = "obj/cow.bin";
+	const char  *seed      = "seed-data";
+	const char  *overlay   = "COW!";
+	const size_t mapsize   = 16;
+	const size_t seedlen   = strlen(seed);
+	const size_t overlaylen = strlen(overlay);
+	char         rbuf[32];
+	char        *mem;
+	ssize_t      rd;
+	int          fd;
+	int          ret       = 0;
+
+	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (fd < 0)
+		return -errno;
+
+	if (ftruncate(fd, (off_t)mapsize) != 0) {
+		ret = -errno;
+		goto ofd;
+	}
+
+	ret = writeall(fd, seed, seedlen);
+	if (ret != 0) {
+		goto ofd;
+	}
+
+	mem = mmap(NULL, mapsize, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+	if (mem == MAP_FAILED) {
+		ret = -errno;
+		goto ofd;
+	}
+
+	memcpy(mem, overlay, overlaylen);
+
+	if (lseek(fd, 0, SEEK_SET) < 0) {
+		ret = -errno;
+		goto omap;
+	}
+
+	memset(rbuf, 0, sizeof(rbuf));
+	rd = read(fd, rbuf, mapsize);
+	if (rd < 0) {
+		ret = -errno;
+		goto omap;
+	}
+	if ((size_t)rd != mapsize) {
+		ret = -EIO;
+		goto omap;
+	}
+	if (memcmp(rbuf, seed, seedlen) != 0) {
+		ret = -EIO;
+		goto omap;
+	}
+
+	if (printf("map case 4: private map -> mem='%.*s', file='%s'\n",
+		   (int)overlaylen, mem, rbuf) < 0)
+		ret = -EIO;
+
+omap:
+	if (munmap(mem, mapsize) != 0 && ret == 0)
+		ret = -errno;
+ofd:
+	if (close(fd) != 0 && ret == 0)
+		ret = -errno;
+
+	return ret;
+}
