@@ -3,11 +3,12 @@
  * Model  : C driver for x86_64 ASM routines
  * Goal   : run assembly hello and mmap demos
  *
- * Usage: ./bin/program [hello|anon|buf|file|simd|sysinfo|all]
+ * Usage: ./bin/program [hello|anon|buf|file|cow|simd|sysinfo|all]
  *   hello - run ASM hello routine
  *   anon  - anonymous page mapping
  *   buf   - anonymous integer buffer
  *   file  - file-backed shared mapping
+ *   cow   - private file mapping that demonstrates copy-on-write
  *   simd  - add two integer vectors in ASM with SSE2
  *   sysinfo - show basic runtime system information
  *   all   - run all in order (default)
@@ -28,6 +29,7 @@ enum mode {
 	MODE_ANON,
 	MODE_BUF,
 	MODE_FILE,
+	MODE_COW,
 	MODE_SIMD,
 	MODE_SYSINFO,
 	MODE_ALL,
@@ -43,6 +45,7 @@ static const struct entry modes[] = {
 	{ "anon", MODE_ANON },
 	{ "buf", MODE_BUF },
 	{ "file", MODE_FILE },
+	{ "cow", MODE_COW },
 	{ "simd", MODE_SIMD },
 	{ "sysinfo", MODE_SYSINFO },
 	{ "all", MODE_ALL },
@@ -51,7 +54,7 @@ static const struct entry modes[] = {
 static void usage(const char *name)
 {
 	fprintf(stderr,
-		"usage: %s [hello|anon|buf|file|simd|sysinfo|all]\n",
+		"usage: %s [hello|anon|buf|file|cow|simd|sysinfo|all]\n",
 		name);
 }
 
@@ -151,6 +154,14 @@ int main(int argc, char **argv)
 		ret = filemap();
 		if (ret != 0) {
 			fprintf(stderr, "filemap: %s\n", strerror(-ret));
+			return 1;
+		}
+	}
+
+	if (mode == MODE_COW || mode == MODE_ALL) {
+		ret = cowmap();
+		if (ret != 0) {
+			fprintf(stderr, "cowmap: %s\n", strerror(-ret));
 			return 1;
 		}
 	}
