@@ -27,7 +27,7 @@ root:
 - Run main app:
   ./bin/program
 
-- Run default flow (hello + mmap cases + sysinfo):
+- Run default flow (hello + mmap cases + simd + sysinfo):
   make run
 
 - Clean build outputs:
@@ -55,8 +55,8 @@ File:
 Behavior:
 - Calls external ASM function `_hello()`
 - Calls ASM math function `_add()`
-- Runs mmap demos via `anon()`, `intbuf()`, and `filemap()`
-- Runs SIMD demo via `_vec_add4()`
+- Runs mmap demos via `anon()`, `intbuf()`, `filemap()`, and `cowmap()`
+- Runs SIMD demo via `vecadd4()`
 - Prints basic runtime details via `sysinfo()`
 
 Modes
@@ -66,6 +66,7 @@ Modes
 - `anon`    anonymous page mapping demo
 - `buf`     anonymous integer buffer demo
 - `file`    file-backed shared mapping demo
+- `cow`     private file mapping demo showing copy-on-write behavior
 - `simd`    SSE2 vector add on 4 integers in assembly
 - `sysinfo` page size and pointer size
 - `all`     run every demo in sequence
@@ -94,6 +95,7 @@ Modes:
 - ./bin/program anon
 - ./bin/program buf
 - ./bin/program file
+- ./bin/program cow
 - ./bin/program all   (default)
 
 Cases:
@@ -105,6 +107,9 @@ Cases:
 
 - case 3 (file):
   file-backed mapping on obj/map.bin + write via mem + msync + readback
+
+- case 4 (cow):
+  private file mapping on obj/cow.bin + memory write + file readback unchanged
 
 Reliability details:
 - Handles partial writes with writeall()
@@ -131,7 +136,11 @@ Contains:
   _add(3, 4) = 7
 
 - ./bin/program all
+  Hello, World!
+  _add(3, 4) = 7
   map case 1: anonymous page text
   map case 2: int buffer -> 0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225
   map case 3: file says -> map case 3: file-backed mapping
+  map case 4: private map -> mem='COW!', file='seed-data'
+  simd: vector add -> 11 22 33 44
   sysinfo: page_size=4096 bytes, pointer_size=8 bytes
