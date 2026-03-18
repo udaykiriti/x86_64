@@ -70,7 +70,7 @@ help:
 
 test: $(TARGET)
 	@set -e; \
-	for mode in hello anon buf file simd sysinfo all; do \
+	for mode in hello anon buf file cow simd sysinfo all; do \
 		echo "==> smoke: $$mode"; \
 		./$(TARGET) $$mode; \
 	done
