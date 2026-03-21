@@ -10,5 +10,6 @@ int anon(void);
 int intbuf(void);
 int filemap(void);
 int cowmap(void);
+int sharedmap(void);
 
 #endif /* MAP_H */

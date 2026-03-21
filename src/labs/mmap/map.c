@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 /*
@@ -279,6 +280,67 @@ omap:
 		ret = -errno;
 ofd:
 	if (close(fd) != 0 && ret == 0)
+		ret = -errno;
+
+	return ret;
+}
+
+/*
+ * sharedmap - Case 5: Shared anonymous mapping across fork
+ *
+ * Allocates one shared anonymous page, forks, writes from the child,
+ * waits in the parent, then prints the value observed through the same
+ * mapping to demonstrate cross-process visibility.
+ *
+ * Returns 0 on success, negative errno on failure.
+ */
+int sharedmap(void)
+{
+	const long  pgl = sysconf(_SC_PAGESIZE);
+	const char *msg = "child-updated-shared-page";
+	size_t      pgsz;
+	char       *mem;
+	pid_t       pid;
+	int         status;
+	int         ret = 0;
+
+	if (pgl <= 0)
+		return -EINVAL;
+
+	pgsz = (size_t)pgl;
+	mem = mmap(NULL, pgsz, PROT_READ | PROT_WRITE,
+		   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	if (mem == MAP_FAILED)
+		return -errno;
+
+	memset(mem, 0, pgsz);
+	memcpy(mem, "parent-seed", strlen("parent-seed"));
+
+	pid = fork();
+	if (pid < 0) {
+		ret = -errno;
+		goto out;
+	}
+
+	if (pid == 0) {
+		memcpy(mem, msg, strlen(msg) + 1);
+		_exit(0);
+	}
+
+	if (waitpid(pid, &status, 0) < 0) {
+		ret = -errno;
+		goto out;
+	}
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+		ret = -EIO;
+		goto out;
+	}
+
+	if (printf("map case 5: shared anon -> '%s'\n", mem) < 0)
+		ret = -EIO;
+
+out:
+	if (munmap(mem, pgsz) != 0 && ret == 0)
 		ret = -errno;
 
 	return ret;

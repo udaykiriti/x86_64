@@ -21,6 +21,11 @@ Cleaning "make clean" [to clean build artifacts].
 "The build system automatically *compiles* all C sources and *assembles* all
 architecture-specific code, *linking* them into a *single* executable."
 
+Program modes include assembly hello/math, several `mmap(2)` demos,
+SIMD vector addition, runtime system info, and a shared anonymous
+mapping example that shows data written in a child process being
+observed by the parent after `fork(2)`.
+
 /* 
    About this repo situation || further details
    GOTO: curr;
