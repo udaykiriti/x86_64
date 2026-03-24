@@ -28,6 +28,7 @@ observed by the parent after `fork(2)`.
 
 /* 
    About this repo situation || further details
+   GOTO: curr;
 */
 
 Architecture
