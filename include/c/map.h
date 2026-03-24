@@ -12,4 +12,11 @@ int filemap(void);
 int cowmap(void);
 int sharedmap(void);
 
+/*
+ * Future Demos
+ * TODO: Implement these later
+ */
+int protect(void);
+int resize(void);
+
 #endif /* MAP_H */

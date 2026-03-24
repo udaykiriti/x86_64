@@ -6,6 +6,7 @@
  * a negative errno value on failure; callers print via strerror(-ret).
  */
 
+#define _GNU_SOURCE
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -344,4 +345,30 @@ out:
 		ret = -errno;
 
 	return ret;
+}
+
+/*
+ * protect - TODO: Implement mprotect demo
+ */
+int protect(void)
+{
+	// TODO: Implement this later
+	// 1. Map a page
+	// 2. Write to it
+	// 3. mprotect(..., PROT_READ)
+	// 4. Try to write again (expect crash/signal)
+	return 0;
+}
+
+/*
+ * resize - TODO: Implement mremap demo
+ */
+int resize(void)
+{
+	// TODO: Implement this later
+	// 1. Map a small region
+	// 2. Write data
+	// 3. mremap to larger size
+	// 4. Verify data is preserved and new space is accessible
+	return 0;
 }
