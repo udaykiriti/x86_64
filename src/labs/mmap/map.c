@@ -32,6 +32,7 @@ static int writeall(int fd, const void *buf, size_t len)
 				continue;
 			return -errno;
 		}
+
 		if (n == 0)
 			return -EIO;
 
@@ -96,6 +97,7 @@ int intbuf(void)
 
 	arr = mmap(NULL, size, PROT_READ | PROT_WRITE,
 		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+
 	if (arr == MAP_FAILED)
 		return -errno;
 
@@ -146,6 +148,7 @@ int filemap(void)
 	int          ret    = 0;
 
 	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
+
 	if (fd < 0)
 		return -errno;
 
@@ -172,6 +175,7 @@ int filemap(void)
 		ret = -errno;
 		goto ofd;
 	}
+
 	mem = NULL; /* prevent double-unmap in omap */
 
 	if (lseek(fd, 0, SEEK_SET) < 0) {
@@ -185,10 +189,12 @@ int filemap(void)
 		ret = -errno;
 		goto ofd;
 	}
+
 	if ((size_t)rd != mapsize) {
 		ret = -EIO;
 		goto ofd;
 	}
+
 	if (memcmp(rbuf, msg, msglen) != 0) {
 		ret = -EIO;
 		goto ofd;
@@ -231,6 +237,7 @@ int cowmap(void)
 	int          ret       = 0;
 
 	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
+
 	if (fd < 0)
 		return -errno;
 
@@ -245,6 +252,7 @@ int cowmap(void)
 	}
 
 	mem = mmap(NULL, mapsize, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+
 	if (mem == MAP_FAILED) {
 		ret = -errno;
 		goto ofd;
@@ -259,14 +267,17 @@ int cowmap(void)
 
 	memset(rbuf, 0, sizeof(rbuf));
 	rd = read(fd, rbuf, mapsize);
+
 	if (rd < 0) {
 		ret = -errno;
 		goto omap;
 	}
+
 	if ((size_t)rd != mapsize) {
 		ret = -EIO;
 		goto omap;
 	}
+
 	if (memcmp(rbuf, seed, seedlen) != 0) {
 		ret = -EIO;
 		goto omap;
@@ -311,6 +322,7 @@ int sharedmap(void)
 	pgsz = (size_t)pgl;
 	mem = mmap(NULL, pgsz, PROT_READ | PROT_WRITE,
 		   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+
 	if (mem == MAP_FAILED)
 		return -errno;
 
@@ -332,6 +344,7 @@ int sharedmap(void)
 		ret = -errno;
 		goto out;
 	}
+
 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 		ret = -EIO;
 		goto out;
