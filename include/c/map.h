@@ -18,5 +18,11 @@ int sharedmap(void);
  */
 int protect(void);
 int resize(void);
+int guardpage(void);
+int memfdmap(void);
+int hugepage(void);
+int fixedhint(void);
+int dualmap(void);
+int lazyfault(void);
 
 #endif /* MAP_H */

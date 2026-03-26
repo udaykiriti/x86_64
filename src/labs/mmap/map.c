@@ -365,11 +365,11 @@ out:
  */
 int protect(void)
 {
-	// TODO: Implement this later
-	// 1. Map a page
-	// 2. Write to it
-	// 3. mprotect(..., PROT_READ)
-	// 4. Try to write again (expect crash/signal)
+	/*
+	 * TODO
+	 * make one page read only after writing
+	 * show what changes after protection
+	 */
 	return 0;
 }
 
@@ -378,10 +378,88 @@ int protect(void)
  */
 int resize(void)
 {
-	// TODO: Implement this later
-	// 1. Map a small region
-	// 2. Write data
-	// 3. mremap to larger size
-	// 4. Verify data is preserved and new space is accessible
+	/*
+	 * TODO
+	 * start with a small mapping
+	 * grow it and check old data is still there
+	 */
+	return 0;
+}
+
+/*
+ * guardpage - TODO: Implement a guard-page stack boundary demo
+ */
+int guardpage(void)
+{
+	/*
+	 * TODO
+	 * keep one page blocked on purpose
+	 * use it like a small safety wall
+	 */
+	return 0;
+}
+
+/*
+ * memfdmap - TODO: Implement an anonymous in-memory file mapping demo
+ */
+int memfdmap(void)
+{
+	/*
+	 * TODO
+	 * try an in-memory file
+	 * map it and see how it behaves like a normal file
+	 */
+	return 0;
+}
+
+/*
+ * hugepage - TODO: Implement an explicit huge-page allocation demo
+ */
+int hugepage(void)
+{
+	/*
+	 * TODO
+	 * try huge pages here
+	 * print a simple message if the system does not allow it
+	 */
+	return 0;
+}
+
+/*
+ * fixedhint - TODO: Implement a fixed-address hint mapping demo
+ */
+int fixedhint(void)
+{
+	/*
+	 * TODO
+	 * ask for a specific address
+	 * compare what we asked with what we got
+	 */
+	return 0;
+}
+
+/*
+ * dualmap - TODO: Implement two mappings of the same backing store
+ */
+int dualmap(void)
+{
+	/*
+	 * TODO
+	 * map the same thing two times
+	 * write in one place and read from the other
+	 */
+	return 0;
+}
+
+/*
+ * lazyfault - TODO: Implement a demand-paging observation demo
+ */
+int lazyfault(void)
+{
+	/*
+	 * TODO
+	 * touch only a few pages
+	 * check how much memory really gets used
+	 */
 	return 0;
 }
