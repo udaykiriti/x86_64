@@ -23,6 +23,9 @@
 extern void _hello(void);
 extern long _add(long a, long b);
 extern void vecadd4(const int *a, const int *b, int *c);
+extern int bitwise_and(int a, int b);
+extern int bitwise_or(int a, int b);
+extern int bitwise_xor(int a, int b);
 
 enum mode {
 	MODE_INVALID = 0,
@@ -33,6 +36,7 @@ enum mode {
 	MODE_COW,
 	MODE_SHARED,
 	MODE_SIMD,
+	MODE_BITWISE,
 	MODE_SYSINFO,
 	MODE_ALL,
 };
@@ -50,6 +54,7 @@ static const struct entry modes[] = {
 	{ "cow", MODE_COW },
 	{ "shared", MODE_SHARED },
 	{ "simd", MODE_SIMD },
+	{ "bitwise", MODE_BITWISE },
 	{ "sysinfo", MODE_SYSINFO },
 	{ "all", MODE_ALL },
 };
@@ -57,7 +62,7 @@ static const struct entry modes[] = {
 static void usage(const char *name)
 {
 	fprintf(stderr,
-		"usage: %s [hello|anon|buf|file|cow|shared|simd|sysinfo|all]\n",
+		"usage: %s [hello|anon|buf|file|cow|shared|simd|bitwise|sysinfo|all]\n",
 		name);
 }
 
@@ -106,6 +111,26 @@ static int simd(void)
 	}
 
 	if (putchar('\n') == EOF)
+		return -1;
+
+	return 0;
+}
+
+static int bitwise(void)
+{
+	const int x = 0xAA;
+	const int y = 0x55;
+
+	if (printf("bitwise: AND(0x%02X, 0x%02X) = 0x%02X\n",
+		   x, y, bitwise_and(x, y)) < 0)
+		return -1;
+
+	if (printf("bitwise: OR(0x%02X, 0x%02X) = 0x%02X\n",
+		   x, y, bitwise_or(x, y)) < 0)
+		return -1;
+
+	if (printf("bitwise: XOR(0x%02X, 0x%02X) = 0x%02X\n",
+		   x, y, bitwise_xor(x, y)) < 0)
 		return -1;
 
 	return 0;
@@ -181,6 +206,14 @@ int main(int argc, char **argv)
 		ret = simd();
 		if (ret != 0) {
 			fprintf(stderr, "simd: failed to run vector demo\n");
+			return 1;
+		}
+	}
+
+	if (mode == MODE_BITWISE || mode == MODE_ALL) {
+		ret = bitwise();
+		if (ret != 0) {
+			fprintf(stderr, "bitwise: failed to run bitwise demo\n");
 			return 1;
 		}
 	}
