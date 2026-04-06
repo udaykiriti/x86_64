@@ -3,16 +3,17 @@
  * Model  : C driver for x86_64 ASM routines
  * Goal   : run assembly hello and mmap demos
  *
- * Usage: ./bin/program [hello|anon|buf|file|cow|shared|simd|sysinfo|all]
- *   hello - run ASM hello routine
- *   anon  - anonymous page mapping
- *   buf   - anonymous integer buffer
- *   file  - file-backed shared mapping
- *   cow   - private file mapping that demonstrates copy-on-write
- *   shared - shared anonymous mapping visible across fork
- *   simd  - add two integer vectors in ASM with SSE2
+ * Usage  : ./bin/program [hello|anon|buf|file|cow|shared|simd|sysinfo|all]
+ *
+ *   hello   - run ASM hello routine
+ *   anon    - anonymous page mapping
+ *   buf     - anonymous integer buffer
+ *   file    - file-backed shared mapping
+ *   cow     - private file mapping that demonstrates copy-on-write
+ *   shared  - shared anonymous mapping visible across fork
+ *   simd    - add two integer vectors in ASM with SSE2
  *   sysinfo - show basic runtime system information
- *   all   - run all in order (default)
+ *   all     - run all in order (default)
  */
 
 #include <stdio.h>
@@ -144,17 +145,20 @@ int main(int argc, char **argv)
 	enum mode mode = parse(name);
 	int ret;
 
-	if (argc > 2) {
+	if (argc > 2) 
+  {
 		usage(argv[0]);
 		return 1;
 	}
 
-	if (mode == MODE_INVALID) {
+	if (mode == MODE_INVALID) 
+  {
 		usage(argv[0]);
 		return 1;
 	}
 
-	if (mode == MODE_HELLO || mode == MODE_ALL) {
+	if (mode == MODE_HELLO || mode == MODE_ALL) 
+  {
 		_hello();
 		if (printf("_add(%ld, %ld) = %ld\n",
 			   left, right, _add(left, right)) < 0 ||
@@ -162,25 +166,32 @@ int main(int argc, char **argv)
 			return 1;
 	}
 
-	if (mode == MODE_ANON || mode == MODE_ALL) {
+	if (mode == MODE_ANON || mode == MODE_ALL) 
+  {
 		ret = anon();
-		if (ret != 0) {
+
+		if (ret != 0) 
+    {
 			fprintf(stderr, "anon: %s\n", strerror(-ret));
 			return 1;
 		}
 	}
 
-	if (mode == MODE_BUF || mode == MODE_ALL) {
+	if (mode == MODE_BUF || mode == MODE_ALL) 
+  {
 		ret = intbuf();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "intbuf: %s\n", strerror(-ret));
 			return 1;
 		}
 	}
 
-	if (mode == MODE_FILE || mode == MODE_ALL) {
+	if (mode == MODE_FILE || mode == MODE_ALL) 
+  {
 		ret = filemap();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "filemap: %s\n", strerror(-ret));
 			return 1;
 		}
@@ -188,7 +199,8 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_COW || mode == MODE_ALL) {
 		ret = cowmap();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "cowmap: %s\n", strerror(-ret));
 			return 1;
 		}
@@ -196,7 +208,8 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_SHARED || mode == MODE_ALL) {
 		ret = sharedmap();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "sharedmap: %s\n", strerror(-ret));
 			return 1;
 		}
@@ -204,7 +217,8 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_SIMD || mode == MODE_ALL) {
 		ret = simd();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "simd: failed to run vector demo\n");
 			return 1;
 		}
@@ -212,7 +226,8 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_BITWISE || mode == MODE_ALL) {
 		ret = bitwise();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "bitwise: failed to run bitwise demo\n");
 			return 1;
 		}
@@ -220,7 +235,8 @@ int main(int argc, char **argv)
 
 	if (mode == MODE_SYSINFO || mode == MODE_ALL) {
 		ret = sysinfo();
-		if (ret != 0) {
+		if (ret != 0) 
+    {
 			fprintf(stderr, "sysinfo: failed to read system info\n");
 			return 1;
 		}
