@@ -30,17 +30,17 @@ int main() {
         }
         args[i] = NULL;
 
-        // Fork process
+        // Fork 
         pid_t pid = fork();
 
         if (pid == 0) {
-            // Child process
+            // Child 
             execvp(args[0], args);
             perror("exec failed");
             exit(1);
         } 
         else if (pid > 0) {
-            // Parent process
+            // Parent 
             waitpid(pid, NULL, 0);
         } 
         else {

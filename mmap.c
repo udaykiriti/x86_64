@@ -23,7 +23,7 @@ int main() {
     }
 
     printf("Allocated memory at: %p\n", mem);
-
+    
     // wr into mapped memory
     strcpy((char*)mem, "Hello from mmap!");
 
