@@ -4,21 +4,6 @@
 This module provides comprehensive x86_64 processor feature detection and manipulation,
 including CPUID queries, register access, and low-level CPU instructions.
 
-## Files Added
-
-### Headers
-- **x86_cpuinfo.h** - CPU identification and feature detection
-- **x86_registers.h** - Control register and MSR access
-- **x86_intrinsics.h** - CPU instructions and atomic operations
-- **x86_paging.h** - Virtual memory paging structures
-- **x86_segment.h** - GDT, IDT, and segmentation structures
-
-### Implementation
-- **x86_cpuinfo.c** - CPUID interface and CPU info gathering
-- **x86_registers.c** - Control register and MSR read/write
-- **x86_cpuinfo.asm** - Assembly optimizations for CPUID
-- **x86_intrinsics.asm** - Low-level CPU instructions
-- **demo_x86_processor.c** - Comprehensive feature demonstration
 
 ## Features
 
